@@ -29,7 +29,7 @@ FILE = Path(__file__).absolute()
 sys.path.append(FILE.parents[0].as_posix())
 # from sensor_msgs.msg import Image, CompressedImage
 
-bridge = CvBridge()
+
 
 class Car_SP(rclpy.node.Node):
     def __init__(self):
@@ -39,10 +39,12 @@ class Car_SP(rclpy.node.Node):
         # make mgspub
         self.publisher = self.create_publisher(Twist, '/skidbot/cmd_vel', 10)
         self.msg = Twist()
+        self.bridge = CvBridge()
         param_descriptor = ParameterDescriptor(
             description='Sets the velocity (in m/s) of the robot.')
         self.declare_parameter('velocity', 0.0, param_descriptor)
 
+        
         # init linez
         self.linez = 0.0
   
@@ -53,13 +55,11 @@ class Car_SP(rclpy.node.Node):
             self.camera_callback,
             10)
         self.subscription            
-        self.vlz = 0                   
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-    
+        self.vlz = 0            
+                                                                                                                                                        
     def camera_callback(self, data):
         t0 = time.time()
-        img = bridge.imgmsg_to_cv2(data, "bgr8")
+        img = self.bridge.imgmsg_to_cv2(data, "bgr8")
 
         ## always resize image before reshape
         img = cv2.resize(img,(120,160), interpolation = cv2.INTER_AREA)

@@ -20,7 +20,6 @@ class Utils:
         
         self.image_name = '{}_img_car_gazebo_record.jpg'.format(str(num + 1))
         self.save_img(data=[self.image_name,self.image])
-        print("run some num")
         with open('data/log.csv', 'a') as file:
             writer = DictWriter(file,fieldnames=self.namerow)
             dict = {"name":self.image_name,"corner":self.data[0],"speed":self.data[1]}
