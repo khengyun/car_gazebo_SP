@@ -27,6 +27,8 @@ from pathlib import Path
 from rich import print
 FILE = Path(__file__).absolute()
 sys.path.append(FILE.parents[0].as_posix())
+from test import testm
+from helpui import *
 # from sensor_msgs.msg import Image, CompressedImage
 
 
@@ -53,7 +55,7 @@ class Car_SP(rclpy.node.Node):
             Image,
             'skidbot/camera_sensor/image_raw',
             self.camera_callback,
-            10)
+            1)
         self.subscription            
         self.vlz = 0            
                                                                                                                                                         
@@ -61,21 +63,13 @@ class Car_SP(rclpy.node.Node):
         t0 = time.time()
         img = self.bridge.imgmsg_to_cv2(data, "bgr8")
 
-        ## always resize image before reshape
-        img = cv2.resize(img,(120,160), interpolation = cv2.INTER_AREA)
-        
-        print("here:  "+str(img.shape))
-        model = load_model('model.h5')
-        img = img.reshape((1,) + (120,160,3))
-
-        result = model.predict(img)
-        print(np.float32(result[0])[0][0])
-
-        self.vlz = np.float32(result[0])[0][0]
-
+        cv2.imwrite("./test2.png",img)
+        n = testm("/home/fptlab/Documents/car_gazebo_SP/car_gazebo_camera_and_msg/gazebo_skidbot/test2.png")*3.14/180
+        print(n)
+        self.vlz = -n
     def timer_callback(self):
 
-        self.msg.linear.x = 0.235
+        self.msg.linear.x = 0.5
         # self.publisher.publish(self.msg)
         # vel
         self.msg.angular.z = float(self.vlz)
